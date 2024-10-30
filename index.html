@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WattNest</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+    <script src="js/firebaseConfig.js" defer></script>
+    <script src="js/app.js" defer></script>
+    <style>
+        /* Additional CSS for header and navigation */
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>WattNest</h1>
+        <nav>
+            <ul>
+                <li><a href="#charging-stations">Charging Stations</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#login">Login</a></li>
+                <li><a href="#register">Register</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="charging-stations">
+            <h2>Nearby Charging Stations</h2>
+            <ul class="station-list" id="stations-list">
+                <!-- Dynamic list of charging stations will be populated here -->
+            </ul>
+        </section>
+
+        <section id="features">
+            <h2>Features</h2>
+            <p>Discover the various features of WattNest, including real-time charging station availability, user-friendly interface, and more!</p>
+        </section>
+
+        <section id="about">
+            <h2>About Us</h2>
+            <p>Learn more about WattNest and our mission to provide convenient charging solutions for electric vehicle users.</p>
+        </section>
+
+        <section id="contact">
+            <h2>Contact</h2>
+            <p>If you have any questions or feedback, feel free to reach out to us!</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; WattNest. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Fetch user's location
+        function getUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            console.log(`Latitude: ${lat}, Longitude: ${lon}`); // Debugging
+            fetchChargingStations(lat, lon);
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+
+        async function fetchChargingStations(lat, lon) {
+            const apiKey = 'YOUR_API_KEY'; // Replace with your API key
+            const url = `https://api.example.com/charging-stations?lat=${lat}&lon=${lon}&key=${apiKey}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                console.log('API Response:', data); // Debugging
+
+                displayChargingStations(data);
+            } catch (error) {
+                console.error('Error fetching charging stations:', error);
+            }
+        }
+
+        function displayChargingStations(data) {
+            const stationsList = document.getElementById('stations-list');
+            stationsList.innerHTML = ''; // Clear previous results
+
+            if (data.stations && data.stations.length > 0) {
+                data.stations.forEach(station => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<a href="${station.url}" target="_blank">${station.name}</a> - ${station.distance} away`;
+                    stationsList.appendChild(li);
+                });
+            } else {
+                stationsList.innerHTML = '<li>No charging stations found nearby.</li>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            getUserLocation(); // Fetch location on load
+        });
+    </script>
+</body>
+</html>

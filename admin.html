@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - WattNest</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+    <script src="js/firebaseConfig.js" defer></script>
+    <script src="js/admin.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>WattNest Admin Panel</h1>
+    </header>
+    
+    <main>
+        <section id="auth">
+            <h2>Admin Login/Register</h2>
+            <form id="admin-form">
+                <input type="text" id="admin-email" placeholder="Email" required>
+                <input type="password" id="admin-password" placeholder="Password" required>
+                <button type="submit">Register/Login</button>
+            </form>
+        </section>
+
+        <section id="add-hub">
+            <h2>Add Charging Hub</h2>
+            <form id="hub-form">
+                <input type="text" id="hub-name" placeholder="Charging Hub Name" required>
+                <input type="text" id="hub-city" placeholder="City" required>
+                <input type="text" id="hub-timings" placeholder="Timings (e.g., 9 AM - 9 PM)" required>
+                <button type="submit">Add Hub</button>
+            </form>
+        </section>
+
+        <section id="available-hubs">
+            <h2>Available Charging Hubs</h2>
+            <ul id="hubs-list">
+                <!-- Real-time charging hubs will be displayed here -->
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; WattNest Admin Panel</p>
+    </footer>
+
+    <script>
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Handle Admin Registration/Login
+        document.getElementById('admin-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('admin-email').value;
+            const password = document.getElementById('admin-password').value;
+
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                alert("Login Successful!");
+            } catch (error) {
+                await auth.createUserWithEmailAndPassword(email, password);
+                alert("Registration Successful!");
+            }
+        });
+
+        // Handle Adding Charging Hubs
+        document.getElementById('hub-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const hubName = document.getElementById('hub-name').value;
+            const hubCity = document.getElementById('hub-city').value;
+            const hubTimings = document.getElementById('hub-timings').value;
+
+            await db.collection('chargingHubs').add({
+                name: hubName,
+                city: hubCity,
+                timings: hubTimings,
+                available: true
+            });
+
+            document.getElementById('hub-form').reset();
+            alert("Charging Hub Added!");
+        });
+
+        // Real-time Hub Availability
+        db.collection('chargingHubs').onSnapshot((snapshot) => {
+            const hubsList = document.getElementById('hubs-list');
+            hubsList.innerHTML = '';
+            snapshot.forEach(doc => {
+                const hub = doc.data();
+                const li = document.createElement('li');
+                li.textContent = `${hub.name} - ${hub.city} - ${hub.timings}`;
+                hubsList.appendChild(li);
+            });
+        });
+    </script>
+</body>
+</html>

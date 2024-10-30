@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - WattNest</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/signin-style.css">
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
     <script src="js/firebaseConfig.js" defer></script>
     <script src="js/app.js" defer></script>
 </head>
@@ -23,18 +25,36 @@
 
     <main>
         <section>
-            <h2>Register</h2>
+            <center><h2>User Registration</h2></center>
             <form id="register-form">
                 <div>
-                    <label for="reg-email">Email:</label>
-                    <input type="email" id="reg-email" required>
+                    <label for="first-name">First Name:</label>
+                    <input type="text" id="first-name" required>
                 </div>
                 <div>
-                    <label for="reg-password">Password:</label>
-                    <input type="password" id="reg-password" required>
+                    <label for="last-name">Last Name:</label>
+                    <input type="text" id="last-name" required>
+                </div>
+                <div>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div>
+                    <label for="mobile">Mobile Number:</label>
+                    <input type="tel" id="mobile" required>
+                </div>
+                <div>
+                    <label for="profile-pic">Profile Picture:</label>
+                    <input type="file" id="profile-pic" accept="image/*">
+                </div>
+                <div>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" required>
                 </div>
                 <button type="submit">Register</button>
             </form>
+            <center><p>-----------------------------------OR-------------------------------------</p></center><br>
+            <button id="google-signin">Sign in with Google</button>
             <p id="register-message"></p>
         </section>
     </main>
@@ -44,16 +64,66 @@
     </footer>
 
     <script>
+        // Initialize Firebase (if not already initialized in firebaseConfig.js)
+        const firebaseConfig = {
+            // Your Firebase configuration here
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Register user with email and password
         document.getElementById('register-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('reg-email').value;
-            const password = document.getElementById('reg-password').value;
+            const firstName = document.getElementById('first-name').value;
+            const lastName = document.getElementById('last-name').value;
+            const email = document.getElementById('email').value;
+            const mobile = document.getElementById('mobile').value;
+            const password = document.getElementById('password').value;
+            const profilePic = document.getElementById('profile-pic').files[0];
 
             try {
                 const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
-                // Successfully registered
+                const user = userCredential.user;
+
+                // Upload profile picture to Firebase Storage
+                const storageRef = firebase.storage().ref();
+                const picRef = storageRef.child(`profile_pics/${user.uid}`);
+                await picRef.put(profilePic);
+
+                // Store additional user info in Firestore
+                await db.collection('users').doc(user.uid).set({
+                    firstName,
+                    lastName,
+                    email,
+                    mobile,
+                    profilePicURL: await picRef.getDownloadURL()
+                });
+
                 document.getElementById('register-message').innerText = "Registration successful! You can now log in.";
-                // Redirect or perform additional actions here
+                // Optionally redirect or perform additional actions here
+            } catch (error) {
+                document.getElementById('register-message').innerText = error.message;
+            }
+        });
+
+        // Google Sign-In
+        document.getElementById('google-signin').addEventListener('click', async () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            try {
+                const result = await firebase.auth().signInWithPopup(provider);
+                const user = result.user;
+
+                // Optionally store additional user info in Firestore
+                await db.collection('users').doc(user.uid).set({
+                    firstName: user.displayName.split(' ')[0] || '',
+                    lastName: user.displayName.split(' ')[1] || '',
+                    email: user.email,
+                    mobile: '', // Optionally collect mobile number from user
+                    profilePicURL: user.photoURL
+                });
+
+                document.getElementById('register-message').innerText = "Login successful! Redirecting...";
+                window.location.href = 'index.html'; // Redirect to home or dashboard
             } catch (error) {
                 document.getElementById('register-message').innerText = error.message;
             }

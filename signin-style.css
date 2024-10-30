@@ -1,0 +1,150 @@
+/* Global Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #0a0a0a, #1c1c1c);
+    color: #ffffff;
+    line-height: 1.6;
+}
+
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: #1f1f1f;
+}
+
+h1 {
+    margin: 0;
+    font-size: 2.5em; /* Adjust the heading size */
+}
+
+/* Navigation */
+nav ul {
+    list-style: none; /* Remove bullet points */
+    padding: 0;
+    margin: 0;
+    display: flex; /* Display items in a row */
+}
+
+nav ul li {
+    margin-right: 20px; /* Spacing between buttons */
+}
+
+nav ul li a {
+    color: #00d1b2;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #00b89c;
+}
+
+/* Main Content */
+main {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+section {
+    margin: 20px 0;
+}
+
+/* Form Styles */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form div {
+    margin-bottom: 15px;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="file"] {
+    padding: 8px; /* Adjusted padding */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%; /* Set width to 100% for full-width input fields */
+    box-sizing: border-box; /* Ensure padding is included in the total width */
+}
+
+
+button {
+    background: linear-gradient(90deg, #00b89c, #00d1b2);
+    border: none;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+button:hover {
+    background: linear-gradient(90deg, #00d1b2, #00b89c);
+    transform: scale(1.05);
+}
+
+/* Google Sign-In Button */
+#google-signin {
+    background-color: #db4437; /* Google Red */
+    color: #fff; /* Text color */
+    padding: 10px 20px; /* Padding for the button */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    font-size: 16px; /* Font size */
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+#google-signin:hover {
+    background-color: #c13527; /* Darker shade on hover */
+}
+
+
+/* Message Display */
+#register-message {
+    margin-top: 15px;
+    color: red;
+}
+
+/* Footer */
+footer {
+    background: #1f1f1f;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    nav {
+        flex-direction: column;
+    }
+
+    nav a {
+        margin: 10px 0;
+    }
+}

@@ -3,7 +3,7 @@ body {
     font-family: Poppins;
     margin: 0;
     padding: 0;
-    background: linear-gradient(135deg, #0a0a0a, #1c1c1c);
+    background: linear-gradient(145deg, #252525, #1b1b1b);
     color: #ffffff;
     line-height: 1.6;
 }
@@ -75,6 +75,42 @@ nav a {
 nav a:hover {
     color: #35f605;
 }
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+    color:  #35f605;
+    padding: 15px 20px;
+    font-size: 1em;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
 
 /* Main Content */
 main {
@@ -88,6 +124,181 @@ section {
     margin: 20px 0;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
+/* General Section Styles */
+section {
+    background: #1b1b1b;
+    padding: 40px 20px;
+    border-radius: 8px;
+    margin: 30px auto;
+    max-width: 1200px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* Section Titles */
+section h2 {
+    font-size: 2.2em;
+    color: #35f605;
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+section h2::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -12px;
+    width: 60px;
+    height: 3px;
+    background: #35f605;
+    border-radius: 2px;
+}
+#charging-stations {
+    background: #f5f5f5;
+    padding: 40px 20px;
+    border-radius: 0px;
+    max-width: flex;
+    margin: 40px auto;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+#charging-stations h2 {
+    font-size: 2.2em;
+    color: #333;
+    margin-bottom: 20px;
+}
+#city-selection {
+    position: absolute; /* Use absolute positioning */
+    top: 120px;         /* Adjust top margin as needed */
+    right: 20px;       /* Align to the right */
+    z-index: 1000;     /* Ensure it's above other elements */
+}
+
+#city-input {
+    width: 250px; /* Adjust the width as needed */
+    padding: 15px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 0px;
+    margin-right: 10px; /* Space between input and button */
+    transition: border-color 0.3s;
+}
+
+#city-input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+#submit-button {
+    padding: 15px 30px;
+    font-size: 1em;
+    border: none;
+    border-radius: 0px;
+    background: #35f605;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+}
+
+#submit-button:hover {
+    background: #2b2b2b;
+    transform: translateY(-2px);
+}
+#stations-list {
+    margin-top: 200px;
+    list-style: none;
+    padding: 0;
+}
+
+#stations-list li {
+    background: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 10px 0;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+#stations-list li:hover {
+    transform: scale(1.02);
+    background: #f0f0f0;
+}
+
+/* Brand Selection */
+#brand-selection {
+    margin-top: 100px; /* Adjust this value as needed to create space above */
+    background-color:#f9f9f9;
+    color: linear-gradient(135deg, #121212, #1f1f1f);
+    border-radius: 0px;
+}
+
+#brand-selection .brand-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+
+#brand-selection .brand-image {
+    width: 110px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 0px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+
+#brand-selection .brand-image:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.7);
+}
+
+/* Charging Stations */
+#charging-stations select, #charging-stations button {
+    padding: 12px 15px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    margin-top: 20px;
+    background: #2b2b2b;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+#charging-stations button:hover, #charging-stations select:hover {
+    background: #35f605;
+    color: #000;
+}
+
+#stations-list {
+    margin-top: 20px;
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+#stations-list li {
+    background: #2e2e2e;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    transition: background 0.3s ease;
+}
+
+#stations-list li:hover {
+    background: #353535;
+}
+
 /* Features Section */
 #features {
     background: linear-gradient(135deg, #121212, #1f1f1f);
@@ -100,7 +311,7 @@ section {
 
 #features h2 {
     font-size: 2.2em;
-    color: #35f605;
+    color: linear-gradient(135deg, #121212, #1f1f1f);
     margin-bottom: 30px;
     position: relative;
     display: inline-block;
@@ -208,7 +419,8 @@ section {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: #000;
+    background: #f5f5f5;
+    color: #000;
     border-radius: 0px;
     padding: 20px;
     margin-top: 30px;

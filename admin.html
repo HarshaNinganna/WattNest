@@ -36,10 +36,18 @@
             </form>
         </section>
 
+        <section id="city-selector">
+            <h2>View Charging Hubs by City</h2>
+            <select id="city-select">
+                <!-- Cities will be populated here -->
+            </select>
+            <button id="fetch-hubs">Show Charging Hubs</button>
+        </section>
+
         <section id="available-hubs">
             <h2>Available Charging Hubs</h2>
             <ul id="hubs-list">
-                <!-- Real-time charging hubs will be displayed here -->
+                <!-- Real-time charging hubs for selected city will be displayed here -->
             </ul>
         </section>
     </main>
@@ -85,19 +93,47 @@
 
             document.getElementById('hub-form').reset();
             alert("Charging Hub Added!");
+            loadCities(); // Refresh cities after adding a new hub
         });
 
-        // Real-time Hub Availability
-        db.collection('chargingHubs').onSnapshot((snapshot) => {
+        // Populate City Dropdown for Selection
+        async function loadCities() {
+            const citySelect = document.getElementById('city-select');
+            citySelect.innerHTML = ''; // Clear previous options
+
+            const citiesSnapshot = await db.collection('chargingHubs').get();
+            const cities = new Set();
+
+            citiesSnapshot.forEach(doc => {
+                const hub = doc.data();
+                cities.add(hub.city);
+            });
+
+            cities.forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                citySelect.appendChild(option);
+            });
+        }
+
+        // Show Hubs Based on Selected City
+        document.getElementById('fetch-hubs').addEventListener('click', async () => {
+            const city = document.getElementById('city-select').value;
             const hubsList = document.getElementById('hubs-list');
-            hubsList.innerHTML = '';
-            snapshot.forEach(doc => {
+            hubsList.innerHTML = ''; // Clear previous results
+
+            const hubsSnapshot = await db.collection('chargingHubs').where('city', '==', city).get();
+            hubsSnapshot.forEach(doc => {
                 const hub = doc.data();
                 const li = document.createElement('li');
-                li.textContent = `${hub.name} - ${hub.city} - ${hub.timings}`;
+                li.textContent = `${hub.name} - ${hub.timings}`;
                 hubsList.appendChild(li);
             });
         });
+
+        // Load cities on initial page load
+        loadCities();
     </script>
 </body>
 </html>

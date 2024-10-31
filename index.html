@@ -24,20 +24,38 @@
                 <li><a href="#features">Features</a></li>
                 <li><a href="#about">About Us</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <li><a href="#login">Login</a></li>
-                <li><a href="#register">Register</a></li>
+                <li class="dropdown">
+                    <a href="#login" class="dropbtn">More</a>
+                    <div class="dropdown-content">
+                        <a href="#button1">About Us</a>
+                        <a href="#button2">Settings</a>
+                        <a href="#button3">Payments</a>
+                        <a href="#button4">Learn</a>
+                        <a href="#button5">History</a>
+                        <a href="#button6">Terms & Conditions</a>
+                    </div>
+                </li>                
+                <li><a href="login.html">Login</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
-        <section id="charging-stations">
-            <h2>Nearby Charging Stations</h2>
-            <ul class="station-list" id="stations-list">
-                <!-- Dynamic list of charging stations will be populated here -->
-            </ul>
+        <div id="city-selection">
+            <input type="text" id="city-input" placeholder="Enter city name (e.g., Bengaluru)">
+            <button id="submit-button" onclick="fetchChargingStations()">Submit</button>
+        </div>
+        
+        <section id="brand-selection">
+            <div class="brand-container">
+                <!-- Brand images dynamically populated from Firebase -->
+            </div>
         </section>
-
+        <section id="charging-stations">
+            <h2>Charging Stations </h2>
+            <ul id="stations-list"></ul>
+        </section>
+        
         <section id="features">
             <h2>Features</h2>
             <div class="feature-cards">
@@ -117,72 +135,38 @@
     </footer>
 
     <script>
-        // Fetch user's location
-        function getUserLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition, showError);
-            } else {
-                alert("Geolocation is not supported by this browser.");
-            }
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Populate city dropdown from Firebase
+        async function loadCities() {
+            const citiesDropdown = document.getElementById('city-select');
+            const citiesSnapshot = await db.collection('cities').get();
+            citiesSnapshot.forEach((doc) => {
+                const option = document.createElement('option');
+                option.value = doc.id;
+                option.textContent = doc.id;
+                citiesDropdown.appendChild(option);
+            });
         }
 
-        function showPosition(position) {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            console.log(`Latitude: ${lat}, Longitude: ${lon}`); // Debugging
-            fetchChargingStations(lat, lon);
-        }
-
-        function showError(error) {
-            switch(error.code) {
-                case error.PERMISSION_DENIED:
-                    alert("User denied the request for Geolocation.");
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    alert("Location information is unavailable.");
-                    break;
-                case error.TIMEOUT:
-                    alert("The request to get user location timed out.");
-                    break;
-                case error.UNKNOWN_ERROR:
-                    alert("An unknown error occurred.");
-                    break;
-            }
-        }
-
-        async function fetchChargingStations(lat, lon) {
-            const apiKey = 'YOUR_API_KEY'; // Replace with your API key
-            const url = `https://api.example.com/charging-stations?lat=${lat}&lon=${lon}&key=${apiKey}`;
-
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                console.log('API Response:', data); // Debugging
-
-                displayChargingStations(data);
-            } catch (error) {
-                console.error('Error fetching charging stations:', error);
-            }
-        }
-
-        function displayChargingStations(data) {
+        // Fetch charging stations for selected city
+        async function fetchChargingStations() {
+            const city = document.getElementById('city-select').value;
             const stationsList = document.getElementById('stations-list');
-            stationsList.innerHTML = ''; // Clear previous results
+            stationsList.innerHTML = '';
 
-            if (data.stations && data.stations.length > 0) {
-                data.stations.forEach(station => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<a href="${station.url}" target="_blank">${station.name}</a> - ${station.distance} away`;
-                    stationsList.appendChild(li);
-                });
-            } else {
-                stationsList.innerHTML = '<li>No charging stations found nearby.</li>';
-            }
+            const hubsSnapshot = await db.collection('chargingHubs').where("city", "==", city).get();
+            hubsSnapshot.forEach((doc) => {
+                const hub = doc.data();
+                const listItem = document.createElement('li');
+                listItem.textContent = `${hub.name} - Available: ${hub.availability}`;
+                stationsList.appendChild(listItem);
+            });
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            getUserLocation(); // Fetch location on load
-        });
+        document.addEventListener('DOMContentLoaded', loadCities);
     </script>
 </body>
 </html>

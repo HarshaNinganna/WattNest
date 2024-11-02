@@ -4,50 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login - WattNest</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/admin-style.css">
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
     <script src="js/firebaseConfig.js" defer></script>
-    <script src="js/admin-login.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1>WattNest Admin Panel - Login</h1>
-    </header>
+    <section id="auth">
+        <h2>Admin Login</h2>
+        <form id="login-form">
+            <input type="email" id="login-email" placeholder="Email" required>
+            <input type="password" id="login-password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <a href="admin-register.html">Register here.</a></p>
+    </section>
 
-    <main>
-        <section id="auth">
-            <h2>Admin Login</h2>
-            <form id="login-form">
-                <input type="text" id="login-email" placeholder="Email" required>
-                <input type="password" id="login-password" placeholder="Password" required>
-                <button type="submit">Login</button>
-            </form>
-        </section>
-    </main>
+    <script>
+        const auth = firebase.auth();
 
-    <footer>
-        <p>&copy; WattNest Admin Panel</p>
-    </footer>
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                alert("Login Successful!");
+                window.location.href = "admin-dashboard.html"; // Redirect to the admin dashboard or desired page
+            } catch (error) {
+                alert('Login failed: ' + error.message);
+                console.error("Login Error:", error.message);
+            }
+        });
+    </script>
 </body>
 </html>
-<script>
-// Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-
-// Handle Admin Login
-document.getElementById('login-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-
-    try {
-        await auth.signInWithEmailAndPassword(email, password);
-        alert("Login Successful!");
-        window.location.href = "admin-dashboard.html"; // Redirect to admin dashboard
-    } catch (error) {
-        alert("Login Failed: " + error.message);
-    }
-});
-</script>

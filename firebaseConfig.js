@@ -1,6 +1,6 @@
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyAk9QvTDGtFvIACEimaG_7a_bcE8YVJAgA",
+  apiKey: "#secrete",
   authDomain: "wattnest.firebaseapp.com",
   projectId: "wattnest",
   storageBucket: "wattnest.firebasestorage.app",

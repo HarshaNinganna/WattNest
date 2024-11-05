@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity History - WattNest</title>
+    <link rel="stylesheet" href="css/admin-style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .history-table th, .history-table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        .history-table th {
+            background-color: #007BFF;
+            color: white;
+        }
+        .card {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Your Activity History</h1>
+    </header>
+
+    <main>
+        <section>
+            <h2>Transaction History</h2>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="transaction-history"></tbody>
+            </table>
+        </section>
+
+        <section>
+            <h2>Account Activity</h2>
+            <div class="card">
+                <h3>Recent Changes</h3>
+                <ul id="recent-changes"></ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 WattNest. All rights reserved.</p>
+    </footer>
+
+    <script>
+        async function fetchTransactionHistory() {
+            try {
+                const response = await fetch('/api/transaction-history'); // Replace with your API endpoint
+                const data = await response.json();
+                const transactionHistoryTable = document.getElementById('transaction-history');
+                transactionHistoryTable.innerHTML = '';
+                data.forEach(transaction => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${transaction.date}</td>
+                        <td>${transaction.description}</td>
+                        <td>${transaction.amount}</td>
+                        <td>${transaction.status}</td>
+                    `;
+                    transactionHistoryTable.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching transaction history:', error);
+            }
+        }
+
+        async function fetchRecentChanges() {
+            try {
+                const response = await fetch('/api/recent-changes'); // Replace with your API endpoint
+                const data = await response.json();
+                const changesList = document.getElementById('recent-changes');
+                changesList.innerHTML = '';
+                data.forEach(change => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = change;
+                    changesList.appendChild(listItem);
+                });
+            } catch (error) {
+                console.error('Error fetching recent changes:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchTransactionHistory();
+            fetchRecentChanges();
+        });
+    </script>
+
+</body>
+</html>

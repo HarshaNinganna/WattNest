@@ -11,8 +11,41 @@
     <script src="js/firebaseConfig.js" defer></script>
     <script src="js/app.js" defer></script>
     <style>
-        /* Additional CSS for header and navigation */
+        /* Additional CSS for modal */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
 
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -27,25 +60,28 @@
                 <li class="dropdown">
                     <a href="#login" class="dropbtn">More</a>
                     <div class="dropdown-content">
-                        <a href="#button1">About Us</a>
-                        <a href="#button2">Settings</a>
-                        <a href="#button3">Payments</a>
-                        <a href="#button4">Learn</a>
-                        <a href="#button5">History</a>
-                        <a href="#button6">Terms & Conditions</a>
+                        <a href="#about">About Us</a>
+                        <a href="#" onclick="openModal('settings.html')">Settings</a>
+                        <a href="#" onclick="openModal('payments.html')">Payments</a>
+                        <a href="#" onclick="openModal('learn.html')">Learn</a>
+                        <a href="#" onclick="openModal('history.html')">History</a>
+                        <a href="#" onclick="openModal('terms.html')">Terms & Conditions</a>
                     </div>
                 </li>                
-                <li><a href="login.html">Login</a></li>
+                <li><a href="#" onclick="openModal('login.html')">Login</a></li>
             </ul>
         </nav>
     </header>
 
-    <main>
-        <div id="city-selection">
-            <input type="text" id="city-input" placeholder="Enter city name (e.g., Bengaluru)">
-            <button id="submit-button" onclick="fetchChargingStations()">Submit</button>
+    <!-- Modal Structure -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <iframe id="modalFrame" src="" frameborder="0" style="width: 100%; height: 400px;"></iframe>
         </div>
-        
+    </div>
+
+    <main>
         <section id="brand-selection">
             <div class="brand-container">
                 <!-- Brand images dynamically populated from Firebase -->
@@ -97,37 +133,93 @@
             </div>
         </section>             
         
-        <section id="contact">
-            <h2>Contact Us</h2>
-            <p>If you have any questions or feedback, feel free to reach out! We’re here to assist you with any inquiries regarding our services or features.</p>
-            
-            <div class="contact-info">
-                <h3>Get in Touch</h3>
-                <p>You can contact us through the following channels:</p>
-                <ul>
-                    <li>
-                        <img src="assets/icons/email.svg" alt="Email Icon" class="icon">
-                        Email: <a href="mailto:info@wattnest.com">info@wattnest.com</a>
-                    </li>
-                    <li>
-                        <img src="assets/icons/phone.svg" alt="Phone Icon" class="icon">
-                        Phone: <a href="tel:+1234567890">+1 234 567 890</a>
-                    </li>
-                    <li>
-                        <img src="assets/icons/support.svg" alt="Support Icon" class="icon">
-                        Support: <a href="https://support.wattnest.com" target="_blank">Visit our Support Center</a>
-                    </li>
-                    <li>
-                        <img src="assets/icons/feedback.svg" alt="Feedback Icon" class="icon">
-                        Feedback: <a href="https://feedback.wattnest.com" target="_blank">Share your feedback</a>
-                    </li>
-                    <li>
-                        <img src="assets/icons/social.svg" alt="Social Media Icon" class="icon">
-                        Follow us on <a href="https://twitter.com/wattnest" target="_blank">Twitter</a> and <a href="https://facebook.com/wattnest" target="_blank">Facebook</a> for the latest updates!
-                    </li>
-                </ul>
+        <section id="contact" class="contact">
+            <div class="container" data-aos="fade-up">
+        
+                <div class="section-title">
+                    <h2>Contact</h2>
+                    <p>For any inquiries, project discussions, or collaboration opportunities, I’m always open to connect. You can reach me via email or phone, and I’m also available on LinkedIn for professional networking. Let’s work together to create something impactful!</p>
+                </div>
+        
+                <div>
+                    <iframe 
+                        style="border:0; width: 100%; height: 270px;" 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3783.685049840493!2d77.66810331543952!3d12.874751012735354!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae6d006001820f%3A0x5323294eadba0363!2sNisarga%20Sun%20Power!5e0!3m2!1sen!2sin!4v1696816501998!5m2!1sen!2sin" 
+                        frameborder="0" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+        
+                <div class="row mt-5">
+                    <div class="col-lg-4">
+                        <div class="info">
+                            <div class="address">
+                                <a href="https://www.google.com/maps/search/?api=1&query=Naganathapura,+Electronic+City+Post,+Bengaluru" target="_blank">
+                                    <i class="bi bi-geo-alt"></i>
+                                    <h4>Location:</h4>
+                                    <p>Naganathapura, Electronic City Post, Bengaluru</p>
+                                </a>
+                            </div>
+        
+                            <div class="email">
+                                <a href="mailto:hv6152239@gmail.com">
+                                    <i class="bi bi-envelope"></i>
+                                    <h4>Email:</h4>
+                                    <p>hv6152239@gmail.com</p>
+                                </a>
+                            </div>
+        
+                            <div class="phone">
+                                <a href="tel:+918867132911">
+                                    <i class="bi bi-phone"></i>
+                                    <h4>Call:</h4>
+                                    <p>+91 8867132911</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="col-lg-8 mt-5 mt-lg-0">
+                        <form id="contactForm" role="form" class="php-email-form">
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
+                                </div>
+                                <div class="col-md-6 form-group mt-3 mt-md-0">
+                                    <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
+                                </div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
+                            </div>
+                            <div class="form-group mt-3">
+                                <textarea class="form-control" name="message" id="message" rows="5" placeholder="Message" required></textarea>
+                            </div>
+                            <div class="text-center"><button type="submit">Send Message</button></div>
+                        </form>
+                    </div>
+        
+                    <script>
+                        document.getElementById('contactForm').addEventListener('submit', function(e) {
+                            e.preventDefault();
+        
+                            var name = document.getElementById('name').value;
+                            var email = document.getElementById('email').value;
+                            var subject = document.getElementById('subject').value;
+                            var message = document.getElementById('message').value;
+        
+                            var whatsappMessage = `Hello, my name is ${name}. \nEmail: ${email} \nSubject: ${subject} \nMessage: ${message}`;
+                            var whatsappUrl = `https://wa.me/918867132911?text=${encodeURIComponent(whatsappMessage)}`;
+        
+                            window.open(whatsappUrl, '_blank');
+                        });
+                    </script>
+        
+                </div>
             </div>
-
+        </section>
+        
+        
     </main>
 
     <footer>
@@ -151,22 +243,25 @@
             });
         }
 
-        // Fetch charging stations for selected city
-        async function fetchChargingStations() {
-            const city = document.getElementById('city-select').value;
-            const stationsList = document.getElementById('stations-list');
-            stationsList.innerHTML = '';
-
-            const hubsSnapshot = await db.collection('chargingHubs').where("city", "==", city).get();
-            hubsSnapshot.forEach((doc) => {
-                const hub = doc.data();
-                const listItem = document.createElement('li');
-                listItem.textContent = `${hub.name} - Available: ${hub.availability}`;
-                stationsList.appendChild(listItem);
-            });
+        function openModal(file) {
+            document.getElementById('modalFrame').src = file; // Set the source of the iframe
+            document.getElementById('myModal').style.display = "block"; // Show the modal
         }
 
-        document.addEventListener('DOMContentLoaded', loadCities);
+        function closeModal() {
+            document.getElementById('myModal').style.display = "none"; // Hide the modal
+            document.getElementById('modalFrame').src = ""; // Clear the iframe source
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            if (event.target === document.getElementById('myModal')) {
+                closeModal();
+            }
+        }
+
+        // Load cities on page load
+        window.onload = loadCities;
     </script>
 </body>
 </html>

@@ -5,50 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - WattNest</title>
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
-    <script src="js/firebaseConfig.js" defer></script>
-    <script src="js/admin.js" defer></script>
+    <script type="module" src="js/firebaseConfig.js" defer></script> <!-- Import firebaseConfig.js as module -->
 </head>
 <body>
     <header>
         <h1>WattNest Admin Panel</h1>
-    </header>
-    
-    <main>
-        <section id="auth">
-            <h2>Admin Login/Register</h2>
-            <form id="admin-form">
-                <input type="text" id="admin-email" placeholder="Email" required>
-                <input type="password" id="admin-password" placeholder="Password" required>
-                <button type="submit">Register/Login</button>
-            </form>
-        </section>
-
-        <section id="add-hub">
-            <h2>Add Charging Hub</h2>
-            <form id="hub-form">
-                <input type="text" id="hub-name" placeholder="Charging Hub Name" required>
-                <input type="text" id="hub-city" placeholder="City" required>
-                <input type="text" id="hub-timings" placeholder="Timings (e.g., 9 AM - 9 PM)" required>
-                <button type="submit">Add Hub</button>
-            </form>
-        </section>
-
-        <section id="city-selector">
-            <h2>View Charging Hubs by City</h2>
-            <select id="city-select">
-                <!-- Cities will be populated here -->
-            </select>
-            <button id="fetch-hubs">Show Charging Hubs</button>
-        </section>
-
-        <section id="available-hubs">
-            <h2>Available Charging Hubs</h2>
-            <ul id="hubs-list">
-                <!-- Real-time charging hubs for selected city will be displayed here -->
+        <nav>
+            <ul>
+                <li><a href="admin.html">Home</a></li>
+                <li><a href="admin-login.html">Login</a></li>
             </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="add-station">
+            <h2>Add Charging Station</h2>
+            <form id="stationForm">
+                <label for="stationName">Station Name:</label>
+                <input type="text" id="stationName" required><br><br>
+
+                <label for="stationCity">City:</label>
+                <input type="text" id="stationCity" required><br><br>
+
+                <label for="stationTimings">Timings:</label>
+                <input type="text" id="stationTimings" placeholder="e.g., 9 AM - 9 PM" required><br><br>
+
+                <label for="stationImage">Station Image:</label>
+                <input type="file" id="stationImage" accept="image/*"><br><br>
+
+                <button type="submit">Add Charging Station</button>
+            </form>
+        </section>
+
+        <section id="station-list">
+            <h2>Available Charging Stations</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Station Name</th>
+                        <th>City</th>
+                        <th>Timings</th>
+                        <th>Image</th>
+                    </tr>
+                </thead>
+                <tbody id="stationTable"></tbody>
+            </table>
         </section>
     </main>
 
@@ -56,84 +58,72 @@
         <p>&copy; WattNest Admin Panel</p>
     </footer>
 
-    <script>
-        // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+    <script type="module">
+        import { db, storage } from './js/firebaseConfig.js';
+        import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+        import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js";
 
-        // Handle Admin Registration/Login
-        document.getElementById('admin-form').addEventListener('submit', async (e) => {
+        // Add station and upload image to Cloud Storage
+        document.getElementById('stationForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('admin-email').value;
-            const password = document.getElementById('admin-password').value;
 
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-                alert("Login Successful!");
-            } catch (error) {
-                await auth.createUserWithEmailAndPassword(email, password);
-                alert("Registration Successful!");
+            const stationName = document.getElementById('stationName').value;
+            const stationCity = document.getElementById('stationCity').value;
+            const stationTimings = document.getElementById('stationTimings').value;
+            const stationImage = document.getElementById('stationImage').files[0];
+
+            if (stationImage) {
+                const storageRef = ref(storage, `stationImages/${stationImage.name}`);
+                try {
+                    // Upload image to Firebase Storage
+                    const snapshot = await uploadBytes(storageRef, stationImage);
+                    const imageUrl = await getDownloadURL(snapshot.ref);
+
+                    // Add station details with image URL to Firestore
+                    await addDoc(collection(db, 'chargingStations'), {
+                        name: stationName,
+                        city: stationCity,
+                        timings: stationTimings,
+                        imageUrl: imageUrl // Save the image URL in Firestore
+                    });
+
+                    alert("Charging Station Added!");
+                    document.getElementById('stationForm').reset();
+                    fetchChargingStations(); // Refresh the table after adding
+                } catch (error) {
+                    console.error("Error uploading image or adding station:", error);
+                    alert("Failed to add station. Please try again.");
+                }
+            } else {
+                alert("Please select an image to upload.");
             }
         });
 
-        // Handle Adding Charging Hubs
-        document.getElementById('hub-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const hubName = document.getElementById('hub-name').value;
-            const hubCity = document.getElementById('hub-city').value;
-            const hubTimings = document.getElementById('hub-timings').value;
+        // Fetch and display stations
+        async function fetchChargingStations() {
+            const stationTable = document.getElementById('stationTable');
+            stationTable.innerHTML = ''; // Clear previous entries
 
-            await db.collection('chargingHubs').add({
-                name: hubName,
-                city: hubCity,
-                timings: hubTimings,
-                available: true
-            });
-
-            document.getElementById('hub-form').reset();
-            alert("Charging Hub Added!");
-            loadCities(); // Refresh cities after adding a new hub
-        });
-
-        // Populate City Dropdown for Selection
-        async function loadCities() {
-            const citySelect = document.getElementById('city-select');
-            citySelect.innerHTML = ''; // Clear previous options
-
-            const citiesSnapshot = await db.collection('chargingHubs').get();
-            const cities = new Set();
-
-            citiesSnapshot.forEach(doc => {
-                const hub = doc.data();
-                cities.add(hub.city);
-            });
-
-            cities.forEach(city => {
-                const option = document.createElement('option');
-                option.value = city;
-                option.textContent = city;
-                citySelect.appendChild(option);
-            });
+            try {
+                const querySnapshot = await getDocs(collection(db, 'chargingStations'));
+                querySnapshot.forEach((doc) => {
+                    const station = doc.data();
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${station.name}</td>
+                        <td>${station.city}</td>
+                        <td>${station.timings}</td>
+                        <td><img src="${station.imageUrl}" alt="Station Image" width="100"></td>
+                    `;
+                    stationTable.appendChild(row);
+                });
+            } catch (error) {
+                console.error("Error fetching stations:", error);
+            }
         }
 
-        // Show Hubs Based on Selected City
-        document.getElementById('fetch-hubs').addEventListener('click', async () => {
-            const city = document.getElementById('city-select').value;
-            const hubsList = document.getElementById('hubs-list');
-            hubsList.innerHTML = ''; // Clear previous results
-
-            const hubsSnapshot = await db.collection('chargingHubs').where('city', '==', city).get();
-            hubsSnapshot.forEach(doc => {
-                const hub = doc.data();
-                const li = document.createElement('li');
-                li.textContent = `${hub.name} - ${hub.timings}`;
-                hubsList.appendChild(li);
-            });
-        });
-
-        // Load cities on initial page load
-        loadCities();
+        // Load stations on page load
+        fetchChargingStations();
     </script>
 </body>
 </html>

@@ -1,0 +1,166 @@
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4; /* Light background color */
+    color: #333;
+}
+
+header {
+    background-color: #4CAF50; /* Header background */
+    padding: 10px;
+    text-align: center;
+    color: white; /* Header text color */
+}
+
+nav ul {
+    list-style-type: none; /* Remove bullets */
+    padding: 0;
+}
+
+nav ul li {
+    display: inline; /* Inline links */
+    margin: 0 15px; /* Space between links */
+}
+
+nav ul li a {
+    color: white; /* Link color */
+    text-decoration: none; /* No underline */
+}
+
+.admin-panel {
+    padding: 20px; /* Padding for the admin panel */
+}
+#auth {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+}
+
+/* Input Fields */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Buttons */
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #4cae4c;
+}
+
+/* Popup Modal for OTP Sent Message */
+#otpModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+#otpModalContent {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+#otpModalClose {
+    background-color: #333;
+    color: white;
+    padding: 8px 16px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Links */
+p {
+    text-align: center;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+.admin-section {
+    background-color: #fff; /* White background for sections */
+    margin: 20px 0; /* Space above and below sections */
+    border: 1px solid #ccc; /* Border */
+    padding: 15px; /* Padding inside sections */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+h2 {
+    color: #4CAF50; /* Section heading color */
+}
+
+input[type="text"],
+input[type="number"] {
+    padding: 10px; /* Padding for input fields */
+    border: 2px solid #4CAF50; /* Border color */
+    border-radius: 5px; /* Rounded corners */
+    width: calc(100% - 22px); /* Full width, accounting for padding */
+    margin-bottom: 10px; /* Space below inputs */
+}
+
+button {
+    background-color: #4CAF50; /* Button background color */
+    color: white; /* Button text color */
+    padding: 10px 15px; /* Padding */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+    transition: background-color 0.3s; /* Transition effect */
+}
+
+button:hover {
+    background-color: #45a049; /* Darker shade on hover */
+}
+
+footer {
+    background-color: #333; /* Footer background */
+    color: #fff; /* Footer text color */
+    text-align: center; /* Center text */
+    padding: 10px; /* Padding */
+    position: relative; /* Allows for proper positioning */
+    bottom: 0; /* Fix at the bottom */
+    width: 100%; /* Full width */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3); /* Shadow effect */
+}

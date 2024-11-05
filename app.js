@@ -5,7 +5,7 @@ import { getFirestore, collection, getDocs, query, where } from "https://www.gst
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyA9BBV8dNbrsKzG-tvFEIz32amRpPxc-5s",
+    apiKey: "",
     authDomain: "wattnest-cde1f.firebaseapp.com",
     projectId: "wattnest-cde1f",
     storageBucket: "wattnest-cde1f.appspot.com", // Fixed storageBucket URL

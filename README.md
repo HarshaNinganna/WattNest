@@ -66,8 +66,8 @@ For any inquiries or feedback, please reach out to:
 Name: Harsha N.
 Email: hv6152239@gmail.com
 GitHub: HarshaNinganna
+
 sql
-Copy code
 
 ### Customization Tips:
 - Update the **Technologies Used** section with the specific frameworks or libraries you employed.

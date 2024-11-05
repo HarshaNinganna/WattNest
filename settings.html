@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - WattNest</title>
+    <link rel="stylesheet" href="css/admin-style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        p {
+            line-height: 1.6;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Account Settings</h1>
+    </header>
+
+    <main>
+        <section>
+            <h2>Update Profile</h2>
+            <form id="settings-form">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+                <label for="password">New Password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter new password">
+
+                <label for="language">Preferred Language:</label>
+                <select id="language" name="language">
+                    <option value="english">English</option>
+                    <option value="spanish">Spanish</option>
+                    <option value="french">French</option>
+                    <option value="german">German</option>
+                </select>
+
+                <button type="submit">Save Changes</button>
+            </form>
+        </section>
+
+        <section>
+            <h2>Notification Settings</h2>
+            <form id="notification-settings">
+                <label>
+                    <input type="checkbox" id="email-notifications" name="email-notifications">
+                    Receive email notifications
+                </label>
+
+                <label>
+                    <input type="checkbox" id="sms-notifications" name="sms-notifications">
+                    Receive SMS notifications
+                </label>
+
+                <button type="submit">Update Notifications</button>
+            </form>
+        </section>
+        
+        <section>
+            <h2>Privacy Settings</h2>
+            <form id="privacy-settings">
+                <label>
+                    <input type="checkbox" id="data-sharing" name="data-sharing">
+                    Allow data sharing with third parties
+                </label>
+
+                <button type="submit">Update Privacy Settings</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 WattNest. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.getElementById('settings-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Implement your form submission logic here
+            alert('Profile updated successfully!');
+        });
+
+        document.getElementById('notification-settings').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Implement your notification settings logic here
+            alert('Notification settings updated successfully!');
+        });
+
+        document.getElementById('privacy-settings').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Implement your privacy settings logic here
+            alert('Privacy settings updated successfully!');
+        });
+    </script>
+
+</body>
+</html>

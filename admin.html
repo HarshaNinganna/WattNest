@@ -3,137 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - WattNest</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>WattNest Admin</title>
+    <link rel="stylesheet" href="css/admin-style.css">
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
     <script src="js/firebaseConfig.js" defer></script>
-    <script src="js/admin.js" defer></script>
+    <script src="js/app.js" defer></script>
+    <style>
+        /* Additional CSS for header and navigation */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        header {
+            background-color: #4CAF50;
+            padding: 10px;
+            text-align: center;
+            color: white;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+        }
+        .admin-panel {
+            padding: 20px;
+        }
+        .admin-section {
+            margin: 20px 0;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
     <header>
         <h1>WattNest Admin Panel</h1>
-    </header>
-    
-    <main>
-        <section id="auth">
-            <h2>Admin Login/Register</h2>
-            <form id="admin-form">
-                <input type="text" id="admin-email" placeholder="Email" required>
-                <input type="password" id="admin-password" placeholder="Password" required>
-                <button type="submit">Register/Login</button>
-            </form>
-        </section>
-
-        <section id="add-hub">
-            <h2>Add Charging Hub</h2>
-            <form id="hub-form">
-                <input type="text" id="hub-name" placeholder="Charging Hub Name" required>
-                <input type="text" id="hub-city" placeholder="City" required>
-                <input type="text" id="hub-timings" placeholder="Timings (e.g., 9 AM - 9 PM)" required>
-                <button type="submit">Add Hub</button>
-            </form>
-        </section>
-
-        <section id="city-selector">
-            <h2>View Charging Hubs by City</h2>
-            <select id="city-select">
-                <!-- Cities will be populated here -->
-            </select>
-            <button id="fetch-hubs">Show Charging Hubs</button>
-        </section>
-
-        <section id="available-hubs">
-            <h2>Available Charging Hubs</h2>
-            <ul id="hubs-list">
-                <!-- Real-time charging hubs for selected city will be displayed here -->
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#charging-stations">Charging Stations</a></li>
+                <li><a href="#user-management">User Management</a></li>
+                <li><a href="#analytics">Analytics</a></li>
+                <li><a href="admin-login.html">Logout</a></li>
             </ul>
+        </nav>
+    </header>
+
+    <main class="admin-panel">
+        <section id="charging-stations" class="admin-section">
+            <h2>Manage Charging Stations</h2>
+            <div>
+                <input type="text" id="station-name" placeholder="Station Name">
+                <input type="text" id="station-city" placeholder="City">
+                <input type="number" id="station-availability" placeholder="Availability">
+                <button id="add-station-button" onclick="addChargingStation()">Add Station</button>
+            </div>
+            <ul id="stations-list"></ul>
         </section>
+
+        <section id="user-management" class="admin-section">
+            <h2>User Management</h2>
+            <div>
+                <h3>Registered Users</h3>
+                <ul id="users-list"></ul>
+            </div>
+        </section>
+        
+        <script>
+            // Fetch users for display
+            async function fetchUsers() {
+                const usersList = document.getElementById('users-list');
+                usersList.innerHTML = '';
+        
+                const usersSnapshot = await db.collection('users').get();
+                usersSnapshot.forEach((doc) => {
+                    const user = doc.data();
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${user.email} - Joined on: ${user.createdAt.toDate().toLocaleDateString()}`;
+                    usersList.appendChild(listItem);
+                });
+            }
+        
+            document.addEventListener('DOMContentLoaded', fetchUsers);
+        </script>        
+
+<section id="analytics" class="admin-section">
+    <h2>Analytics</h2>
+    <p>Overview of app usage, number of charging sessions, and user engagement.</p>
+    <div id="analytics-data">
+        <!-- Dynamic analytics data will be inserted here -->
+    </div>
+</section>
+
+<script>
+    async function fetchAnalytics() {
+        const analyticsData = document.getElementById('analytics-data');
+        // Example: Fetch total charging sessions and users
+        const totalSessions = await db.collection('chargingSessions').get();
+        const totalUsers = await db.collection('users').get();
+
+        analyticsData.innerHTML = `
+            <p>Total Charging Sessions: ${totalSessions.size}</p>
+            <p>Total Registered Users: ${totalUsers.size}</p>
+        `;
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchAnalytics);
+</script>
+
     </main>
 
     <footer>
-        <p>&copy; WattNest Admin Panel</p>
+        <p>&copy; WattNest Admin Panel. All rights reserved.</p>
     </footer>
 
     <script>
         // Initialize Firebase
         const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Handle Admin Registration/Login
-        document.getElementById('admin-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('admin-email').value;
-            const password = document.getElementById('admin-password').value;
+        // Function to add a charging station
+        async function addChargingStation() {
+            const name = document.getElementById('station-name').value;
+            const city = document.getElementById('station-city').value;
+            const availability = parseInt(document.getElementById('station-availability').value);
 
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-                alert("Login Successful!");
-            } catch (error) {
-                await auth.createUserWithEmailAndPassword(email, password);
-                alert("Registration Successful!");
+            if (name && city && !isNaN(availability)) {
+                await db.collection('chargingHubs').add({
+                    name: name,
+                    city: city,
+                    availability: availability
+                });
+                alert('Charging station added successfully!');
+                document.getElementById('station-name').value = '';
+                document.getElementById('station-city').value = '';
+                document.getElementById('station-availability').value = '';
+                fetchChargingStations(); // Refresh the list
+            } else {
+                alert('Please fill in all fields correctly.');
             }
-        });
+        }
 
-        // Handle Adding Charging Hubs
-        document.getElementById('hub-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const hubName = document.getElementById('hub-name').value;
-            const hubCity = document.getElementById('hub-city').value;
-            const hubTimings = document.getElementById('hub-timings').value;
+        // Fetch charging stations for display
+        async function fetchChargingStations() {
+            const stationsList = document.getElementById('stations-list');
+            stationsList.innerHTML = '';
 
-            await db.collection('chargingHubs').add({
-                name: hubName,
-                city: hubCity,
-                timings: hubTimings,
-                available: true
-            });
-
-            document.getElementById('hub-form').reset();
-            alert("Charging Hub Added!");
-            loadCities(); // Refresh cities after adding a new hub
-        });
-
-        // Populate City Dropdown for Selection
-        async function loadCities() {
-            const citySelect = document.getElementById('city-select');
-            citySelect.innerHTML = ''; // Clear previous options
-
-            const citiesSnapshot = await db.collection('chargingHubs').get();
-            const cities = new Set();
-
-            citiesSnapshot.forEach(doc => {
+            const hubsSnapshot = await db.collection('chargingHubs').get();
+            hubsSnapshot.forEach((doc) => {
                 const hub = doc.data();
-                cities.add(hub.city);
-            });
-
-            cities.forEach(city => {
-                const option = document.createElement('option');
-                option.value = city;
-                option.textContent = city;
-                citySelect.appendChild(option);
+                const listItem = document.createElement('li');
+                listItem.textContent = `${hub.name} - Available: ${hub.availability}`;
+                stationsList.appendChild(listItem);
             });
         }
 
-        // Show Hubs Based on Selected City
-        document.getElementById('fetch-hubs').addEventListener('click', async () => {
-            const city = document.getElementById('city-select').value;
-            const hubsList = document.getElementById('hubs-list');
-            hubsList.innerHTML = ''; // Clear previous results
+        // Fetch users for display
+        async function fetchUsers() {
+            const usersList = document.getElementById('users-list');
+            usersList.innerHTML = '';
 
-            const hubsSnapshot = await db.collection('chargingHubs').where('city', '==', city).get();
-            hubsSnapshot.forEach(doc => {
-                const hub = doc.data();
-                const li = document.createElement('li');
-                li.textContent = `${hub.name} - ${hub.timings}`;
-                hubsList.appendChild(li);
+            const usersSnapshot = await db.collection('users').get();
+            usersSnapshot.forEach((doc) => {
+                const user = doc.data();
+                const listItem = document.createElement('li');
+                listItem.textContent = `${user.email} - Joined on: ${user.createdAt.toDate().toLocaleDateString()}`;
+                usersList.appendChild(listItem);
             });
-        });
+        }
 
-        // Load cities on initial page load
-        loadCities();
+        document.addEventListener('DOMContentLoaded', async () => {
+            fetchChargingStations();
+            fetchUsers();
+        });
     </script>
 </body>
 </html>
